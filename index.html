@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administrativo - Web a2</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-gray-100 font-sans text-gray-800 flex h-screen overflow-hidden">
+
+    <aside class="w-64 bg-slate-900 text-white flex flex-col justify-between hidden md:flex">
+        <div>
+            <div class="p-5 flex items-center gap-2 border-b border-slate-800">
+                <i data-lucide="layout-dashboard" class="text-blue-400"></i>
+                <span class="text-xl font-bold tracking-wider">WebAdmin <span class="text-xs text-blue-400 font-normal">v1.0</span></span>
+            </div>
+            <nav class="p-4 space-y-2">
+                <button onclick="switchTab('dashboard')" id="btn-dashboard" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left bg-blue-600 text-white font-medium transition">
+                    <i data-lucide="home" class="w-5 h-5"></i> Dashboard
+                </button>
+                <button onclick="switchTab('inventario')" id="btn-inventario" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                    <i data-lucide="package" class="w-5 h-5"></i> Inventario / Stock
+                </button>
+                <button onclick="switchTab('facturacion')" id="btn-facturacion" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                    <i data-lucide="shopping-cart" class="w-5 h-5"></i> Facturación (POS)
+                </button>
+                <button onclick="switchTab('config')" id="btn-config" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                    <i data-lucide="settings" class="w-5 h-5"></i> Supabase Config
+                </button>
+            </nav>
+        </div>
+        <div class="p-4 border-t border-slate-800 text-xs text-slate-500 text-center">
+            Conectado a la nube
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col overflow-y-auto">
+        <header class="bg-white shadow-sm px-6 py-4 flex justify-between items-center shrink-0">
+            <h1 id="page-title" class="text-2xl font-bold text-slate-800">Panel de Control</h1>
+            <div class="flex items-center gap-4">
+                <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> Servidor Online
+                </span>
+                <div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-700 border">
+                    U
+                </div>
+            </div>
+        </header>
+
+        <div class="p-6 flex-1">
+
+            <section id="tab-dashboard" class="tab-content space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-xs border border-gray-200 flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 uppercase">Ventas del Día</p>
+                            <p class="text-3xl font-bold text-slate-900 mt-1">$1,240.50</p>
+                        </div>
+                        <div class="p-3 bg-blue-50 text-blue-600 rounded-lg"><i data-lucide="dollar-sign"></i></div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-xs border border-gray-200 flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 uppercase">Productos en Alerta</p>
+                            <p class="text-3xl font-bold text-red-600 mt-1">4 items</p>
+                        </div>
+                        <div class="p-3 bg-red-50 text-red-600 rounded-lg"><i data-lucide="alert-triangle"></i></div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-xs border border-gray-200 flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 uppercase">Operaciones de Caja</p>
+                            <p class="text-3xl font-bold text-green-600 mt-1">18 transac.</p>
+                        </div>
+                        <div class="p-3 bg-green-50 text-green-600 rounded-lg"><i data-lucide="trending-up"></i></div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-xs border border-gray-200 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+                        <h3 class="font-bold text-slate-800">Últimos Movimientos de Facturación</h3>
+                        <i data-lucide="refresh-cw" class="w-4 h-4 text-slate-400 cursor-pointer"></i>
+                    </div>
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 text-xs font-semibold text-slate-500 uppercase border-b border-gray-100">
+                                <th class="p-4">Nro Factura</th>
+                                <th class="p-4">Cliente</th>
+                                <th class="p-4">Método de Pago</th>
+                                <th class="p-4 text-right">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100 text-sm">
+                            <tr>
+                                <td class="p-4 font-medium text-blue-600">#FAC-0024</td>
+                                <td class="p-4">Corporación Universal, C.A.</td>
+                                <td class="p-4"><span class="bg-orange-100 text-orange-800 px-2 py-0.5 rounded text-xs">USDT (Binance)</span></td>
+                                <td class="p-4 text-right font-bold">$350.00</td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 font-medium text-blue-600">#FAC-0023</td>
+                                <td class="p-4">Carlos Mendoza</td>
+                                <td class="p-4"><span class="bg-green-100 text-green-800 px-2 py-0.5 rounded text-xs">Efectivo Divisas</span></td>
+                                <td class="p-4 text-right font-bold">$45.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="tab-inventario" class="tab-content hidden space-y-4">
+                <div class="flex flex-col sm:flex-row gap-4 justify-between items-center bg-white p-4 rounded-xl border border-gray-200 shadow-xs">
+                    <div class="relative w-full sm:w-72">
+                        <input type="text" placeholder="Buscar por código o descripción..." class="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-500 text-sm">
+                        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                    <button class="w-full sm:w-auto bg-blue-600 text-white px-4 py-2 rounded-lg font-medium text-sm flex items-center justify-center gap-2 hover:bg-blue-700 transition">
+                        <i data-lucide="plus" class="w-4 h-4"></i> Nuevo Producto (a2)
+                    </button>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-xs border border-gray-200 overflow-hidden">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 text-xs font-semibold text-slate-500 uppercase border-b border-gray-100">
+                                <th class="p-4">Código</th>
+                                <th class="p-4">Descripción Componente / Artículo</th>
+                                <th class="p-4">Ubicación / Dep.</th>
+                                <th class="p-4 text-center">Existencia</th>
+                                <th class="p-4 text-right">Precio Venta</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100 text-sm">
+                            <tr>
+                                <td class="p-4 font-mono text-xs text-slate-500">PART-9982X</td>
+                                <td class="p-4 font-medium text-slate-900">Pantalla Display Compatible Samsung A22 4G</td>
+                                <td class="p-4 text-slate-500">Depósito Central</td>
+                                <td class="p-4 text-center font-bold text-green-600">12 unidades</td>
+                                <td class="p-4 text-right font-bold">$35.00</td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 font-mono text-xs text-slate-500">CHIP-POWER01</td>
+                                <td class="p-4 font-medium text-slate-900">IC de Carga / Power Management Chip Universal</td>
+                                <td class="p-4 text-slate-500">Gavetero Técnico</td>
+                                <td class="p-4 text-center font-bold text-red-600">2 unidades</td>
+                                <td class="p-4 text-right font-bold">$8.50</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="tab-facturacion" class="tab-content hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 space-y-4">
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-xs space-y-4">
+                        <h3 class="font-bold text-slate-800 flex items-center gap-2"><i data-lucide="keyboard" class="text-blue-500"></i> Entrada de Item Fast-Key</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Código o Barra</label>
+                                <input type="text" placeholder="Ingresa código y presiona Enter" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 text-sm font-mono">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Cant.</label>
+                                <input type="number" value="1" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 text-sm text-center">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-xs border border-gray-200 overflow-hidden">
+                        <div class="p-4 bg-slate-50 border-b font-semibold text-sm text-slate-700">Items Cargados en la Nota</div>
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-[10px] font-bold text-slate-500 uppercase border-b">
+                                    <th class="p-3">Cant</th>
+                                    <th class="p-3">Descripción</th>
+                                    <th class="p-3 text-right">Precio Un.</th>
+                                    <th class="p-3 text-right">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-sm divide-y">
+                                <tr>
+                                    <td class="p-3 font-bold text-center w-12">1</td>
+                                    <td class="p-3 font-medium">Reemplazo de Puerto de Carga Tipo C (Soporte Soldado)</td>
+                                    <td class="p-3 text-right">$15.00</td>
+                                    <td class="p-3 text-right font-bold">$15.00</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 text-white p-6 rounded-xl shadow-xs flex flex-col justify-between h-fit space-y-6">
+                    <div class="space-y-4">
+                        <h3 class="font-bold text-lg border-b border-slate-800 pb-2 flex items-center gap-2"><i data-lucide="wallet" class="text-green-400"></i> Cierre de Operación</h3>
+                        
+                        <div>
+                            <label class="block text-xs text-slate-400 uppercase mb-1">Cliente / Cédula / RIF</label>
+                            <input type="text" value="V-12345678 - Cliente General" class="w-full p-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white focus:ring-2 focus:ring-blue-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs text-slate-400 uppercase mb-1">Forma de Despacho / Pago</label>
+                            <select class="w-full p-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white focus:ring-2 focus:ring-blue-500">
+                                <option>Efectivo Divisas ($)</option>
+                                <option>Pago Móvil / Bolívares</option>
+                                <option>Binance Pay (USDT)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 border-t border-slate-800 pt-4">
+                        <div class="flex justify-between text-sm text-slate-400"><span>Subtotal:</span><span>$15.00</span></div>
+                        <div class="flex justify-between text-sm text-slate-400"><span>I.V.A (16%):</span><span>$0.00 (Exento)</span></div>
+                        <div class="flex justify-between text-xl font-bold border-t border-slate-800 pt-2 text-green-400">
+                            <span>TOTAL:</span><span>$15.00</span>
+                        </div>
+                    </div>
+
+                    <button class="w-full bg-green-500 text-slate-900 font-bold py-3 rounded-lg hover:bg-green-400 transition cursor-pointer flex items-center justify-center gap-2 shadow-md">
+                        <i data-lucide="check-circle"></i> Procesar y Registrar (F2)
+                    </button>
+                </div>
+            </section>
+
+            <section id="tab-config" class="tab-content hidden max-w-2xl bg-white p-6 rounded-xl border border-gray-200 shadow-xs space-y-6">
+                <div>
+                    <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2"><i data-lucide="database" class="text-purple-600"></i> Enlace de Infraestructura Backend</h3>
+                    <p class="text-sm text-gray-500 mt-1">Conecta tu interfaz estática de GitHub Pages con tu base de datos relacional y de autenticación en Supabase.</p>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Supabase URL Project</label>
+                        <input type="text" placeholder="https://xxxxxxxxxxxxxxxxxxxx.supabase.co" class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 text-sm font-mono">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Supabase Anon Public API Key</label>
+                        <textarea rows="3" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 text-sm font-mono"></textarea>
+                    </div>
+                    <button class="bg-purple-600 text-white font-medium px-5 py-2.5 rounded-lg text-sm hover:bg-purple-700 transition flex items-center gap-2">
+                        <i data-lucide="save" class="w-4 h-4"></i> Guardar y Sincronizar Tablas
+                    </button>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        // Inicializar iconos de Lucide al cargar la interfaz
+        lucide.createIcons();
+
+        function switchTab(tabName) {
+            // Ocultar todos los contenedores de pestañas
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            
+            // Mostrar la pestaña seleccionada
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+
+            // Resetear estilos de todos los botones en el sidebar
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white', 'font-medium');
+                btn.classList.add('text-slate-400', 'hover:bg-slate-800', 'hover:text-white');
+            });
+
+            // Dar estilo activo al botón clickeado
+            const activeBtn = document.getElementById(`btn-${tabName}`);
+            activeBtn.classList.remove('text-slate-400', 'hover:bg-slate-800', 'hover:text-white');
+            activeBtn.classList.add('bg-blue-600', 'text-white', 'font-medium');
+
+            // Actualizar el título de la barra superior según el módulo
+            const titles = {
+                dashboard: "Panel de Control / Dashboard",
+                inventario: "Control de Inventarios y Almacén",
+                facturacion: "Módulo de Facturación y Ventas Rápidas",
+                config: "Configuración del Sistema y Credenciales"
+            };
+            document.getElementById('page-title').innerText = titles[tabName];
+        }
+    </script>
+</body>
+</html>
