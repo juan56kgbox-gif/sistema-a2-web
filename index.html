@@ -4,43 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Administrativo - Web a2</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- Iconos Lucide -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- LIBRERÍA OFICIAL DE SUPABASE -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-gray-100 font-sans text-gray-800 flex h-screen overflow-hidden">
 
-    <!-- SIDEBAR -->
     <aside class="w-64 bg-slate-900 text-white flex flex-col justify-between hidden md:flex">
         <div>
             <div class="p-5 flex items-center gap-2 border-b border-slate-800">
                 <i data-lucide="layout-dashboard" class="text-blue-400"></i>
-                <span class="text-xl font-bold tracking-wider">WebAdmin <span class="text-xs text-blue-400 font-normal">v1.1</span></span>
+                <span class="text-xl font-bold tracking-wider">WebAdmin <span class="text-xs text-blue-400 font-normal">v1.2</span></span>
             </div>
             <nav class="p-4 space-y-2">
-                <button onclick="switchTab('dashboard')" id="btn-dashboard" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left bg-blue-600 text-white font-medium transition">
+                <button onclick="switchTab('dashboard')" id="btn-dashboard" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left bg-blue-600 text-white font-medium transition cursor-pointer">
                     <i data-lucide="home" class="w-5 h-5"></i> Dashboard
                 </button>
-                <button onclick="switchTab('inventario')" id="btn-inventario" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                <button onclick="switchTab('inventario')" id="btn-inventario" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-slate-400 hover:bg-slate-800 hover:text-white transition cursor-pointer">
                     <i data-lucide="package" class="w-5 h-5"></i> Inventario / Stock
                 </button>
-                <button onclick="switchTab('facturacion')" id="btn-facturacion" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                <button onclick="switchTab('facturacion')" id="btn-facturacion" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-slate-400 hover:bg-slate-800 hover:text-white transition cursor-pointer">
                     <i data-lucide="shopping-cart" class="w-5 h-5"></i> Facturación (POS)
                 </button>
-                <button onclick="switchTab('config')" id="btn-config" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                <button onclick="switchTab('config')" id="btn-config" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-slate-400 hover:bg-slate-800 hover:text-white transition cursor-pointer">
                     <i data-lucide="database" class="w-5 h-5"></i> Supabase Config
                 </button>
             </nav>
         </div>
-        <div class="p-4 border-t border-slate-800 text-xs text-slate-500 text-center" id="status-text">
+        <div class="p-4 border-t border-slate-800 text-xs text-green-400 text-center font-semibold" id="status-text">
             Desconectado de la nube
         </div>
     </aside>
 
-    <!-- ÁREA PRINCIPAL -->
     <main class="flex-1 flex flex-col overflow-y-auto">
         <header class="bg-white shadow-sm px-6 py-4 flex justify-between items-center shrink-0">
             <h1 id="page-title" class="text-2xl font-bold text-slate-800">Panel de Control</h1>
@@ -53,21 +48,45 @@
 
         <div class="p-6 flex-1">
 
-            <!-- TAB: DASHBOARD -->
             <section id="tab-dashboard" class="tab-content space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="bg-white p-6 rounded-xl shadow-xs border border-gray-200 flex items-center justify-between">
-                        <div><p class="text-sm font-medium text-gray-500 uppercase">Ventas del Día</p><p class="text-3xl font-bold text-slate-900 mt-1">$0.00</p></div>
+                        <div><p class="text-sm font-medium text-gray-500 uppercase">Ventas del Día</p><p id="dash-ventas-total" class="text-3xl font-bold text-slate-900 mt-1">$0.00</p></div>
                         <div class="p-3 bg-blue-50 text-blue-600 rounded-lg"><i data-lucide="dollar-sign"></i></div>
                     </div>
                     <div class="bg-white p-6 rounded-xl shadow-xs border border-gray-200 flex items-center justify-between">
-                        <div><p class="text-sm font-medium text-gray-500 uppercase">Productos en Alerta</p><p class="text-3xl font-bold text-slate-900 mt-1" id="dash-alertas">0 items</p></div>
+                        <div><p class="text-sm font-medium text-gray-500 uppercase">Productos en Alerta</p><p class="text-3xl font-bold text-red-600 mt-1" id="dash-alertas">0 items</p></div>
                         <div class="p-3 bg-red-50 text-red-600 rounded-lg"><i data-lucide="alert-triangle"></i></div>
                     </div>
+                    <div class="bg-white p-6 rounded-xl shadow-xs border border-gray-200 flex items-center justify-between">
+                        <div><p class="text-sm font-medium text-gray-500 uppercase">Operaciones de Caja</p><p id="dash-transacciones" class="text-3xl font-bold text-green-600 mt-1">0 transac.</p></div>
+                        <div class="p-3 bg-green-50 text-green-600 rounded-lg"><i data-lucide="trending-up"></i></div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-xs border border-gray-200 overflow-hidden mt-6">
+                    <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-slate-50">
+                        <h3 class="font-bold text-slate-800 text-sm uppercase">Últimos Movimientos de Facturación</h3>
+                        <button onclick="cargarVentas()" class="text-slate-500 hover:text-slate-800"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
+                    </div>
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-50 text-xs font-semibold text-gray-500 uppercase border-b">
+                                <th class="p-4">Nro Factura</th>
+                                <th class="p-4">Cliente</th>
+                                <th class="p-4">Método de Pago</th>
+                                <th class="p-4 text-right">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-ventas-body" class="divide-y divide-gray-100 text-sm">
+                            <tr>
+                                <td colspan="4" class="p-4 text-center text-gray-400">Conecta Supabase para ver la caja...</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </section>
 
-            <!-- TAB: INVENTARIO -->
             <section id="tab-inventario" class="tab-content hidden space-y-4">
                 <div class="flex justify-between items-center bg-white p-4 rounded-xl border border-gray-200 shadow-xs">
                     <button onclick="cargarInventario()" class="bg-slate-800 text-white px-4 py-2 rounded-lg font-medium text-sm flex items-center gap-2 cursor-pointer">
@@ -95,15 +114,68 @@
                 </div>
             </section>
 
-            <!-- TAB: FACTURACIÓN -->
             <section id="tab-facturacion" class="tab-content hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="lg:col-span-2 bg-white p-6 rounded-xl border border-gray-200 shadow-xs">
-                    <h3 class="font-bold text-slate-800">Facturación POS</h3>
-                    <p class="text-gray-500 text-sm mt-2">Configura primero Supabase para habilitar las consultas de caja.</p>
+                <div class="lg:col-span-2 bg-white p-6 rounded-xl border border-gray-200 shadow-xs space-y-4">
+                    <h3 class="font-bold text-slate-800 border-b pb-2 flex items-center gap-2"><i data-lucide="shopping-bag" class="text-blue-600"></i> Nueva Venta (Caja POS)</h3>
+                    
+                    <div class="grid grid-cols-3 gap-4 items-end">
+                        <div class="col-span-2">
+                            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Seleccionar Componente</label>
+                            <select id="pos-producto" class="w-full p-2.5 border rounded-lg text-sm bg-gray-50"></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Cant.</label>
+                            <input id="pos-cantidad" type="number" value="1" min="1" class="w-full p-2 border rounded-lg text-sm text-center">
+                        </div>
+                    </div>
+                    <button onclick="agregarAlCarrito()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium p-2.5 rounded-lg text-sm flex items-center justify-center gap-2 cursor-pointer">
+                        <i data-lucide="plus"></i> Añadir a la Factura
+                    </button>
+
+                    <div class="border rounded-lg overflow-hidden mt-4">
+                        <table class="w-full text-left text-xs">
+                            <tr class="bg-gray-100 font-bold text-gray-700 border-b">
+                                <th class="p-3">Artículo</th>
+                                <th class="p-3 text-center">Cant.</th>
+                                <th class="p-3 text-right">Precio</th>
+                                <th class="p-3 text-right">Subtotal</th>
+                            </tr>
+                            <tbody id="pos-carrito-body">
+                                <tr><td colspan="4" class="p-4 text-center text-gray-400">El carrito está vacío. Añade repuestos arriba.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-xs space-y-4 flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <h3 class="font-bold text-slate-800 border-b pb-2 flex items-center gap-2"><i data-lucide="credit-card" class="text-green-600"></i> Cierre de Factura</h3>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Nombre del Cliente</label>
+                            <input id="pos-cliente" type="text" placeholder="Cliente General / Empresa" class="w-full p-2.5 border rounded-lg text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Método de Pago</label>
+                            <select id="pos-metodo" class="w-full p-2.5 border rounded-lg text-sm bg-gray-50">
+                                <option value="Efectivo Divisas">Efectivo Divisas</option>
+                                <option value="USDT (Binance)">USDT (Binance)</option>
+                                <option value="Transferencia / Pago Móvil">Transferencia / Pago Móvil</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t space-y-4">
+                        <div class="flex justify-between items-center text-xl font-black text-slate-900">
+                            <span>TOTAL A PAGAR:</span>
+                            <span id="pos-total-global" class="text-blue-600">$0.00</span>
+                        </div>
+                        <button onclick="procesarFactura()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer text-base">
+                            <i data-lucide="check-circle"></i> Procesar y Emitir Factura
+                        </button>
+                    </div>
                 </div>
             </section>
 
-            <!-- TAB: CONFIG -->
             <section id="tab-config" class="tab-content hidden max-w-2xl bg-white p-6 rounded-xl border border-gray-200 shadow-xs space-y-6">
                 <div>
                     <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2"><i data-lucide="database" class="text-purple-600"></i> Credenciales de Base de Datos</h3>
@@ -130,6 +202,8 @@
     <script>
         lucide.createIcons();
         let supabaseClient = null;
+        let carrito = [];
+        let cacheProductos = [];
 
         window.onload = function() {
             const savedUrl = localStorage.getItem('sb-url');
@@ -153,20 +227,23 @@
             localStorage.setItem('sb-url', url);
             localStorage.setItem('sb-key', key);
             inicializarSupabase(url, key);
-            alert("¡Configuración guardada con éxito en el navegador!");
+            alert("¡Configuración guardada y sincronizada con éxito!");
         }
 
         function inicializarSupabase(url, key) {
             try {
                 supabaseClient = supabase.createClient(url, key);
-                document.getElementById('status-text').innerText = "Conectado a Supabase";
+                document.getElementById('status-text').innerText = "🟢 Conectado a Supabase";
+                
                 const pill = document.getElementById('db-pill');
                 pill.className = "bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded-full flex items-center gap-1";
-                document.getElementById('db-dot').className = "w-2 h-2 bg-green-500 rounded-full animate-pulse";
+                pill.innerHTML = `<span id="db-dot" class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> Conectado`;
+                
                 cargarInventario();
+                cargarVentas();
             } catch (err) {
                 console.error(err);
-                alert("Error al conectar.");
+                alert("Error al conectar con la base de datos.");
             }
         }
 
@@ -185,6 +262,9 @@
                 return;
             }
 
+            cacheProductos = productos; // Guardar copia local para el selector del POS
+            actualizarSelectorPOS();
+
             if (productos.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-gray-500">No hay productos en la tabla.</td></tr>`;
                 return;
@@ -195,14 +275,14 @@
 
             productos.forEach(prod => {
                 if(prod.existencia <= 2) alertasCount++;
-                const stockColor = prod.existencia <= 2 ? 'text-red-600' : 'text-green-600';
+                const stockColor = prod.existencia <= 2 ? 'text-red-600 font-bold' : 'text-green-600';
                 const row = `
                     <tr>
                         <td class="p-4 font-mono text-xs text-slate-500">${prod.codigo_barras}</td>
                         <td class="p-4 font-medium text-slate-900">${prod.descripcion}</td>
                         <td class="p-4 text-slate-500">${prod.ubicacion || 'N/A'}</td>
-                        <td class="p-4 text-center font-bold ${stockColor}">${prod.existencia} unidades</td>
-                        <td class="p-4 text-right font-bold">$${parseFloat(prod.precio_venta).toFixed(2)}</td>
+                        <td class="p-4 text-center ${stockColor}">${prod.existencia} uds</td>
+                        <td class="p-4 text-right font-bold text-slate-900">$${parseFloat(prod.precio_venta).toFixed(2)}</td>
                     </tr>
                 `;
                 tbody.innerHTML += row;
@@ -210,16 +290,172 @@
             document.getElementById('dash-alertas').innerText = `${alertasCount} items`;
         }
 
+        async function cargarVentas() {
+            if(!supabaseClient) return;
+            const tbody = document.getElementById('tabla-ventas-body');
+            tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-500">Actualizando caja...</td></tr>`;
+
+            const { data: ventas, error } = await supabaseClient
+                .from('ventas')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if(error || !ventas) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-red-500">Error al cargar caja.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = "";
+            let totalDia = 0;
+
+            ventas.forEach(v => {
+                totalDia += parseFloat(v.total);
+                tbody.innerHTML += `
+                    <tr class="border-b border-gray-100">
+                        <td class="p-4 font-mono text-xs text-blue-600 font-bold">${v.numero_factura}</td>
+                        <td class="p-4 font-medium text-slate-700">${v.cliente}</td>
+                        <td class="p-4"><span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-slate-100 text-slate-800">${v.metodo_pago}</span></td>
+                        <td class="p-4 text-right font-bold text-slate-900">$${parseFloat(v.total).toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('dash-ventas-total').innerText = `$${totalDia.toFixed(2)}`;
+            document.getElementById('dash-transacciones').innerText = `${ventas.length} transac.`;
+        }
+
+        function actualizarSelectorPOS() {
+            const select = document.getElementById('pos-producto');
+            if(!select) return;
+            select.innerHTML = `<option value="">-- Seleccione Repuesto / Artículo --</option>`;
+            cacheProductos.forEach(p => {
+                select.innerHTML += `<option value="${p.id}">${p.descripcion} (Stock: ${p.existencia} | $${p.precio_venta})</option>`;
+            });
+        }
+
+        function agregarAlCarrito() {
+            const select = document.getElementById('pos-producto');
+            const qtyInput = document.getElementById('pos-cantidad');
+            const prodId = parseInt(select.value);
+            const cantidad = parseInt(qtyInput.value);
+
+            if(!prodId) { alert("Por favor selecciona un componente."); return; }
+            if(cantidad <= 0) { alert("La cantidad debe ser mayor a 0."); return; }
+
+            const prod = cacheProductos.find(p => p.id === prodId);
+            if(!prod) return;
+
+            if(cantidad > prod.existencia) {
+                alert(`¡Error! No hay suficiente stock en el taller. Stock disponible: ${prod.existencia} unidades.`);
+                return;
+            }
+
+            const itemExistente = carrito.find(item => item.id === prodId);
+            if(itemExistente) {
+                if(itemExistente.cantidad + cantidad > prod.existencia) {
+                    alert("La cantidad acumulada en el carrito supera el stock del taller.");
+                    return;
+                }
+                itemExistente.cantidad += cantidad;
+            } else {
+                carrito.push({
+                    id: prod.id,
+                    descripcion: prod.descripcion,
+                    precio: parseFloat(prod.precio_venta),
+                    cantidad: cantidad
+                });
+            }
+
+            qtyInput.value = 1;
+            renderCarrito();
+        }
+
+        function renderCarrito() {
+            const tbody = document.getElementById('pos-carrito-body');
+            const totalLabel = document.getElementById('pos-total-global');
+            
+            if(carrito.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-400">El carrito está vacío. Añade repuestos arriba.</td></tr>`;
+                totalLabel.innerText = "$0.00";
+                return;
+            }
+
+            tbody.innerHTML = "";
+            let total = 0;
+
+            carrito.forEach((item, index) => {
+                const subtotal = item.precio * item.cantidad;
+                total += subtotal;
+                tbody.innerHTML += `
+                    <tr class="border-b">
+                        <td class="p-3 font-medium text-slate-800">${item.descripcion} <button onclick="eliminarDelCarrito(${index})" class="text-red-500 ml-2 hover:text-red-700 cursor-pointer text-xs">[Eliminar]</button></td>
+                        <td class="p-3 text-center">${item.cantidad}</td>
+                        <td class="p-3 text-right">$${item.precio.toFixed(2)}</td>
+                        <td class="p-3 text-right font-bold">$${subtotal.toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+
+            totalLabel.innerText = `$${total.toFixed(2)}`;
+        }
+
+        function eliminarDelCarrito(index) {
+            carrito.splice(index, 1);
+            renderCarrito();
+        }
+
+        async function procesarFactura() {
+            if(carrito.length === 0) { alert("El carrito de compras está vacío."); return; }
+            
+            const cliente = document.getElementById('pos-cliente').value.trim() || "Cliente General";
+            const metodo = document.getElementById('pos-metodo').value;
+            const total = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+            const nroFactura = "#FAC-" + Math.floor(1000 + Math.random() * 9000);
+
+            // 1. Guardar movimiento de caja en Supabase
+            const { error: errorVenta } = await supabaseClient
+                .from('ventas')
+                .insert([{ numero_factura: nroFactura, cliente, metodo_pago: metodo, total }]);
+
+            if(errorVenta) {
+                alert("Error al guardar la venta: " + errorVenta.message);
+                return;
+            }
+
+            // 2. Descontar el stock real de cada artículo en el taller
+            for(let item of carrito) {
+                const prodOriginal = cacheProductos.find(p => p.id === item.id);
+                const nuevoStock = prodOriginal.existencia - item.cantidad;
+
+                await supabaseClient
+                    .from('productos')
+                    .update({ existencia: nuevoStock })
+                    .eq('id', item.id);
+            }
+
+            alert(`¡Factura ${nroFactura} procesada con éxito! Stock descontado.`);
+            
+            // Limpiar todo y actualizar pantallas
+            carrito = [];
+            document.getElementById('pos-cliente').value = "";
+            renderCarrito();
+            
+            await cargarInventario();
+            await cargarVentas();
+            switchTab('dashboard');
+        }
+
         function switchTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.getElementById(`tab-${tabName}`).classList.remove('hidden');
             document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.className = "tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-slate-400 hover:bg-slate-800 hover:text-white transition";
+                btn.className = "tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-slate-400 hover:bg-slate-800 hover:text-white transition cursor-pointer";
             });
             const activeBtn = document.getElementById(`btn-${tabName}`);
-            activeBtn.className = "tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left bg-blue-600 text-white font-medium transition";
+            activeBtn.className = "tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left bg-blue-600 text-white font-medium transition cursor-pointer";
             
             if(tabName === 'inventario') cargarInventario();
+            if(tabName === 'dashboard') cargarVentas();
         }
     </script>
 </body>
